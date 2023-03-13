@@ -1,39 +1,30 @@
-import { arc } from "d3";
-import "./App.css";
+// import { arc } from "d3"
+import { useCallback, useState } from "react"
+import "./App.css"
 
-const width = 700;
-const height = 500;
-const centerX = width / 2;
-const centerY = height / 2;
-const strokeWidth = 10;
-const eyeOffsetX = 140;
-const eyeOffsetY = 64;
-const eyeRadius = 50;
-const mouthWidth = 18;
-const mouthRadius = 200;
+const width = 700
+const height = 500
+const circleRadius = 30
 
-const mouthArc = arc()
-  .innerRadius(mouthRadius)
-  .outerRadius(mouthRadius - mouthWidth)
-  .startAngle(Math.PI / 2)
-  .endAngle(Math.PI * (3 / 2));
+const initialMousePosition = { x: width / 2, y: height / 2 }
 
 function App() {
+  const [mousePosition, setMousePosition] = useState(initialMousePosition)
+  const handleMouseMove = useCallback(
+    (event) => {
+      const { clientX, clientY } = event
+      console.log({ clientX, clientY })
+      setMousePosition({ x: clientX, y: clientY })
+    },
+    [setMousePosition]
+  )
   return (
-    <svg width={width} height={height}>
-      <g transform={`translate(${centerX}, ${centerY})`}>
-        <circle
-          r={centerY - strokeWidth / 2}
-          fill="yellow"
-          stroke="black"
-          strokeWidth={strokeWidth}
-        />
-        <circle cx={-eyeOffsetX} cy={-eyeOffsetY} r={eyeRadius} />
-        <circle cx={eyeOffsetX} cy={-eyeOffsetY} r={eyeRadius} />
-        <path d={mouthArc()} />
+    <svg width={width} height={height} onMouseMove={handleMouseMove}>
+      <g>
+        <circle cx={mousePosition.x} cy={mousePosition.y} r={circleRadius} />
       </g>
     </svg>
-  );
+  )
 }
 
-export default App;
+export default App
